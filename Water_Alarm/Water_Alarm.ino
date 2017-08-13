@@ -8,14 +8,16 @@
 
 SoftwareSerial mySerial(RxD, TxD); // RX, TX for Bluetooth
 
-
+int ledPin = 5;
+int relayPin = 9; 
 void setup() {
 
 mySerial.begin(9600); // For Bluetooth
 
 Serial.begin(9600); // For the IDE monitor Tools -> Serial Monitor
 
-pinMode(4,OUTPUT);
+pinMode(ledPin,OUTPUT);
+pinMode(relayPin,OUTPUT);
 
 
 
@@ -24,7 +26,7 @@ pinMode(4,OUTPUT);
 void loop() {
 
 // put your main code here, to run repeatedly:
-
+digitalWrite(relayPin, HIGH);
 
 
 boolean isValidInput; do { byte c; // get the next character from the bluetooth serial port
@@ -40,13 +42,17 @@ switch ( c ) {
 
 case 'A': // You've entered a
 
-  digitalWrite(4, HIGH);
+  digitalWrite(relayPin, LOW);
+  digitalWrite(ledPin, HIGH);
   delay(4000);
-  digitalWrite(4, LOW);
+  digitalWrite(relayPin, HIGH);
+  digitalWrite(ledPin, LOW);
   delay(10000);
-  digitalWrite(4, HIGH);
+  digitalWrite(relayPin, LOW);
+  digitalWrite(ledPin, HIGH);
   delay(4000);
-  digitalWrite(4, LOW);
+  digitalWrite(relayPin, HIGH);
+  digitalWrite(ledPin, LOW);
   
 
 isValidInput = true;
@@ -55,13 +61,17 @@ break;
 
 case 'B': // You've entered a
 
-  digitalWrite(4, HIGH);
+  digitalWrite(relayPin, LOW);
+  digitalWrite(ledPin, HIGH);
   delay(5000);
-  digitalWrite(4, LOW);
+  digitalWrite(relayPin, HIGH);
+  digitalWrite(ledPin, LOW);
   delay(10000);
-  digitalWrite(4, HIGH);
+  digitalWrite(relayPin, LOW);
+  digitalWrite(ledPin, HIGH);
   delay(4000);
-  digitalWrite(4, LOW);
+  digitalWrite(relayPin, HIGH);
+  digitalWrite(ledPin, LOW);
   
 
   isValidInput = true;
@@ -70,13 +80,17 @@ break;
 
 case 'C': // You've entered a
 
-  digitalWrite(4, HIGH);
+  digitalWrite(relayPin, LOW);
+  digitalWrite(ledPin, HIGH);
   delay(6000);
-  digitalWrite(4, LOW);
+  digitalWrite(relayPin, HIGH);
+  digitalWrite(ledPin, LOW);
   delay(10000);
-  digitalWrite(4, HIGH);
+  digitalWrite(relayPin, LOW);
+  digitalWrite(ledPin, HIGH);
   delay(4000);
-  digitalWrite(4, LOW);
+  digitalWrite(relayPin, HIGH);
+  digitalWrite(ledPin, LOW);
   
 
   isValidInput = true;
@@ -85,13 +99,17 @@ break;
 
 case 'D': // You've entered a
 
-  digitalWrite(4, HIGH);
+  digitalWrite(relayPin, LOW);
+  digitalWrite(ledPin, HIGH);
   delay(7000);
-  digitalWrite(4, LOW);
+  digitalWrite(relayPin, HIGH);
+  digitalWrite(ledPin, LOW);
   delay(10000);
-  digitalWrite(4, HIGH);
+  digitalWrite(relayPin, LOW);
+  digitalWrite(ledPin, HIGH);
   delay(5000);
-  digitalWrite(4, LOW);
+  digitalWrite(relayPin, HIGH);
+  digitalWrite(ledPin, LOW);
   
 
   isValidInput = true;
@@ -100,13 +118,17 @@ break;
 
 case 'E': // You've entered a
 
-  digitalWrite(4, HIGH);
+  digitalWrite(relayPin, LOW);
+  digitalWrite(ledPin, HIGH);
   delay(8000);
-  digitalWrite(4, LOW);
+  digitalWrite(relayPin, HIGH);
+  digitalWrite(ledPin, LOW);
   delay(10000);
-  digitalWrite(4, HIGH);
+  digitalWrite(relayPin, LOW);
+  digitalWrite(ledPin, HIGH);
   delay(5000);
-  digitalWrite(4, LOW);
+  digitalWrite(relayPin, HIGH);
+  digitalWrite(ledPin, LOW);
   
 
   isValidInput = true;
@@ -115,15 +137,16 @@ break;
 
 
 case 'F': // You've entered b
-  digitalWrite(4, HIGH);
-
+  digitalWrite(relayPin, LOW);
+  digitalWrite(ledPin, HIGH);
 
   isValidInput = true;
 
 break;
 
 case 'f': // You've entered b
-  digitalWrite(4, LOW);
+  digitalWrite(relayPin, HIGH);
+  digitalWrite(ledPin, LOW);
 
 
   isValidInput = true;
