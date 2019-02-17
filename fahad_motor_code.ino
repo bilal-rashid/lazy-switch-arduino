@@ -6,7 +6,12 @@
 #define TxD 2
 
 #define RxD 3
-
+//#include <RH_ASK.h>
+//#ifdef RH_HAVE_HARDWARE_SPI
+//#include <SPI.h> // Not actually used but needed to compile
+//#endif
+//
+//RH_ASK driver(2000,  4, 7, 5); // ESP8266 or ESP32: do not use pin 11 or 2
 SoftwareSerial mySerial(RxD, TxD); // RX, TX for Bluetooth
 long counter;
 long counter_value;
@@ -16,8 +21,18 @@ const int RED = 6;
 const int BLUE = 7;
 const int GREEN = 8;
 const int SIGNAL = 9;
+bool isOn;
 void setup()
 {
+//  #ifdef RH_HAVE_SERIAL
+////     Serial.begin(115200);    // Debugging only
+//#endif
+//    if (!driver.init())
+//#ifdef RH_HAVE_SERIAL
+////         Serial.println("init failed");
+//#else
+//  ;
+//#endif
 
     mySerial.begin(9600); // For Bluetooth
 
@@ -29,6 +44,7 @@ void setup()
     pinMode(11, INPUT);
     // Any code that you want to run once....
     counter = 0;
+    isOn = false;
     EEPROM.get(counterValueAddress, counter_value);
 }
 
@@ -50,6 +66,7 @@ void loop()
                 digitalWrite(6, HIGH);
                 //        digitalWrite(6, LOW);
                 mySerial.println("Motor Powered OFF");
+                isOn = false;
                 counter = counter - 1;
             }
             else if(counter>1) {
@@ -63,12 +80,38 @@ void loop()
             buttonState = digitalRead(11);
             if (buttonState == HIGH) {
               // turn LED on:
-              digitalWrite(9, LOW);
-              digitalWrite(5, LOW);
-              digitalWrite(6, HIGH);
-              counter = counter_value;
+              if(!isOn){
+                digitalWrite(9, LOW);
+                digitalWrite(5, LOW);
+                digitalWrite(6, HIGH);
+                counter = counter_value;
+                isOn = true;
+                delay(1000);
+              }else{
+                counter = 2;
+                delay(100);
+              }
             } else {
             }
+//            uint8_t buf[RH_ASK_MAX_MESSAGE_LEN];
+//            uint8_t buflen = sizeof(buf);
+//            if (driver.recv(buf, &buflen)) // Non-blocking
+//            { 
+//              String rcv;
+//              for(int i=0;i<buflen;i++){
+//                rcv += (char)buf[i];
+//              }
+//              Serial.println(rcv);
+//              if(rcv == "12ON"){
+//                digitalWrite(9, LOW);
+//                digitalWrite(5, LOW);
+//                digitalWrite(6, HIGH);
+//                counter = counter_value;
+//                isOn = true;
+//              }else if (rcv == "12FF"){
+//                counter = 2;
+//              }
+//            }
 
         }; // LOOP...
 
@@ -88,6 +131,7 @@ void loop()
             counter = 30L * 10L * 60L;
 
             isValidInput = true;
+            isOn = true;
 
             break;
 
@@ -102,6 +146,7 @@ void loop()
             mySerial.println("Motor Powered OFF");
 
             isValidInput = true;
+            isOn = false;
 
             break;
 
@@ -115,6 +160,7 @@ void loop()
             counter = 60L * 10L * 60L;
 
             isValidInput = true;
+            isOn = true;
 
             break;
         case 'd': // You've entered a
@@ -127,6 +173,7 @@ void loop()
             counter = 90L * 10L * 60L;
 
             isValidInput = true;
+            isOn = true;
 
             break;
 
@@ -140,6 +187,7 @@ void loop()
             counter = 120L * 10L * 60L;
 
             isValidInput = true;
+            isOn = true;
 
             break;
 
@@ -153,6 +201,7 @@ void loop()
             counter = 150L * 10L * 60L;
 
             isValidInput = true;
+            isOn = true;
 
             break;
 
@@ -166,6 +215,7 @@ void loop()
             counter = 180L * 10L * 60L;
 
             isValidInput = true;
+            isOn = true;
 
             break;
         case 'A': // You've entered a
