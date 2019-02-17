@@ -6,12 +6,12 @@
 #define TxD 2
 
 #define RxD 3
-//#include <RH_ASK.h>
-//#ifdef RH_HAVE_HARDWARE_SPI
-//#include <SPI.h> // Not actually used but needed to compile
-//#endif
-//
-//RH_ASK driver(2000,  4, 7, 5); // ESP8266 or ESP32: do not use pin 11 or 2
+#include <RH_ASK.h>
+#ifdef RH_HAVE_HARDWARE_SPI
+#include <SPI.h> // Not actually used but needed to compile
+#endif
+
+RH_ASK driver(2000,  4, 7, 5); // ESP8266 or ESP32: do not use pin 11 or 2
 SoftwareSerial mySerial(RxD, TxD); // RX, TX for Bluetooth
 long counter;
 long counter_value;
@@ -24,10 +24,10 @@ const int SIGNAL = 9;
 bool isOn;
 void setup()
 {
-//  #ifdef RH_HAVE_SERIAL
-////     Serial.begin(115200);    // Debugging only
-//#endif
-//    if (!driver.init())
+  #ifdef RH_HAVE_SERIAL
+//     Serial.begin(115200);    // Debugging only
+#endif
+     (driver.init());
 //#ifdef RH_HAVE_SERIAL
 ////         Serial.println("init failed");
 //#else
@@ -51,6 +51,8 @@ void setup()
 void loop()
 {
 
+    uint8_t buf[RH_ASK_MAX_MESSAGE_LEN];
+    uint8_t buflen = sizeof(buf);
     // put your main code here, to run repeatedly:
 
     digitalWrite(9, HIGH);
@@ -59,7 +61,27 @@ void loop()
     boolean isValidInput;
     do {
         byte c; // get the next character from the bluetooth serial port
+        
         while (!mySerial.available()) {
+          if (driver.recv(buf, &buflen)) // Non-blocking
+            { 
+              String rcv;
+              for(int i=0;i<buflen;i++){
+                rcv += (char)buf[i];
+              }
+              if(rcv == "12ON"){
+                digitalWrite(9, LOW);
+                digitalWrite(5, LOW);
+                digitalWrite(6, HIGH);
+                counter = counter_value;
+                isOn = true;
+                Serial.println("ON");
+              }else if (rcv == "12OF"){
+                counter = 2;
+                isOn = false;
+                Serial.println("OFF");
+              }
+            }
             if (counter == 1) {
                 digitalWrite(9, HIGH);
                 digitalWrite(5, HIGH);
@@ -93,28 +115,10 @@ void loop()
               }
             } else {
             }
-//            uint8_t buf[RH_ASK_MAX_MESSAGE_LEN];
-//            uint8_t buflen = sizeof(buf);
-//            if (driver.recv(buf, &buflen)) // Non-blocking
-//            { 
-//              String rcv;
-//              for(int i=0;i<buflen;i++){
-//                rcv += (char)buf[i];
-//              }
-//              Serial.println(rcv);
-//              if(rcv == "12ON"){
-//                digitalWrite(9, LOW);
-//                digitalWrite(5, LOW);
-//                digitalWrite(6, HIGH);
-//                counter = counter_value;
-//                isOn = true;
-//              }else if (rcv == "12FF"){
-//                counter = 2;
-//              }
-//            }
 
         }; // LOOP...
 
+       
         c = mySerial.read(); // Execute the option based on the character recieved
 
         Serial.print(c); // Print the character received to the IDE serial monitor
